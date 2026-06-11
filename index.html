@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Rate Meal Matrix - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+    
+    <!-- সিকিউরিটি স্ক্রিপ্ট: পেজ লোডের শুরুতেই রান করবে -->
+    <script>
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/auth';
+        }
+    </script>
+    
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold tracking-tight text-cyan-400">Fixed Rate Meal Matrix <span class="text-xs font-mono bg-cyan-950 px-2 py-0.5 rounded text-cyan-300 border border-cyan-800">Operational Node</span></h1>
+        <div id="userInfo" class="text-sm font-medium text-slate-400">
+            User: <span id="activeUserName" class="text-cyan-400 font-bold"></span> 
+            (Rate: <span id="activeUserRate" class="text-amber-400"></span> tk)
+            <button onclick="logout()" class="ml-4 bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 px-3 py-1 rounded transition border border-rose-500/30">Logout</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- LEFT PANEL: USER CONFIGURATION RATE -->
+        <div class="space-y-6">
+            <section class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-lg">
+                <h3 class="text-sm font-bold text-slate-200 mb-2">Change Your Personal Meal Rate</h3>
+                <div class="flex space-x-2">
+                    <input type="number" id="updateUserRateInput" class="bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white w-full font-mono outline-none focus:border-amber-500">
+                    <button onclick="updatePersonalRate()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded text-xs transition uppercase tracking-wider">Update</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT PANEL: CORE MEAL OPERATIONS -->
+        <section class="lg:col-span-2 space-y-6">
+            
+            <!-- DAILY MEAL COUNT ENTRY -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-lg">
+                <h3 class="text-md font-bold text-slate-200 mb-3 border-b border-slate-800 pb-2">Set Daily Meal Count</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Target Date</label>
+                        <input type="date" id="mealDate" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Meal Quantity (Count)</label>
+                        <input type="number" id="mealCount" min="0" value="1" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white outline-none">
+                    </div>
+                </div>
+                <button onclick="submitMealCount()" class="w-full mt-4 bg-cyan-600 hover:bg-cyan-500 text-slate-950 text-sm font-bold py-2.5 px-4 rounded transition uppercase tracking-wider">Save Meal Entry</button>
+            </div>
+
+            <!-- MONTHLY SUMMARY EXCEL SHEET -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-lg">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+                    <h3 class="text-md font-bold text-slate-200">মাসিক এক্সেল ক্যালকুলেটর (Fixed User Wise Cost)</h3>
+                    <div class="flex items-center space-x-2">
+                        <input type="month" id="summaryMonth" class="bg-slate-900 border border-slate-700 rounded p-1 text-xs text-white">
+                        <button onclick="fetchMonthlySummary()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 text-xs font-bold py-1 px-3 rounded transition">Process Sheet</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                    <div class="bg-slate-900 border border-slate-800 rounded p-3">
+                        <div class="text-xs font-bold text-slate-500 uppercase">Total Combined Cost</div>
+                        <div id="summaryTotalCost" class="text-xl font-mono text-amber-400 mt-1">0.00 tk</div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 rounded p-3">
+                        <div class="text-xs font-bold text-slate-500 uppercase">Total System Meals</div>
+                        <div id="summaryTotalMeals" class="text-xl font-mono text-blue-400 mt-1">0</div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-xs uppercase text-slate-500 bg-slate-900/50">
+                                <th class="p-2.5 rounded-l">Member Name</th>
+                                <th class="p-2.5 text-center">Total Meals (Count)</th>
+                                <th class="p-2.5 text-center">Your Fixed Rate</th>
+                                <th class="p-2.5 rounded-r text-right">Total Cost (Meals × Rate)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTableBody" class="divide-y divide-slate-800 text-slate-300">
+                            <tr>
+                                <td colspan="4" class="p-4 text-center text-slate-500 italic">Processing System...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ANALYTICS SEPARATED GRAPH -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-lg">
+                <h3 class="text-md font-bold text-slate-200 mb-3 border-b border-slate-800 pb-2">Individual Payable Analytics Graph</h3>
+                <div class="relative w-full h-64">
+                    <canvas id="analyticsChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        let token = localStorage.getItem('token') || '';
+        let currentUser = JSON.parse(localStorage.getItem('user')) || null;
+        let chartInstance = null;
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('mealDate').value = todayStr;
+        document.getElementById('summaryMonth').value = todayStr.substring(0, 7);
+
+        // ড্যাশবোর্ড ডেটা লোড প্রসেস
+        if (token && currentUser) {
+            document.getElementById('activeUserName').innerText = currentUser.name;
+            document.getElementById('activeUserRate').innerText = currentUser.fixedMealRate || 70;
+            document.getElementById('updateUserRateInput').value = currentUser.fixedMealRate || 70;
+            fetchMonthlySummary();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/auth';
+        }
+
+        async function updatePersonalRate() {
+            const newRate = document.getElementById('updateUserRateInput').value;
+            const response = await fetch('/api/user/update-rate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ fixedMealRate: newRate })
+            });
+            if(response.ok) {
+                const data = await response.json();
+                currentUser.fixedMealRate = data.fixedMealRate;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                document.getElementById('activeUserRate').innerText = data.fixedMealRate;
+                alert("Your Fixed Meal Rate is updated.");
+                fetchMonthlySummary();
+            } else {
+                alert("Failed to update rate.");
+            }
+        }
+
+        async function submitMealCount() {
+            const date = document.getElementById('mealDate').value;
+            const count = document.getElementById('mealCount').value;
+
+            const response = await fetch('/api/meals/request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ date, count })
+            });
+            if(response.ok) {
+                alert("Meal count successfully saved.");
+                fetchMonthlySummary();
+            } else {
+                alert("Error inserting entry.");
+            }
+        }
+
+        async function fetchMonthlySummary() {
+            const month = document.getElementById('summaryMonth').value;
+            const response = await fetch(`/api/summary/monthly?month=${month}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if(!response.ok) return;
+            const data = await response.json();
+
+            document.getElementById('summaryTotalCost').innerText = data.totalSystemExpense.toFixed(2) + ' tk';
+            document.getElementById('summaryTotalMeals').innerText = data.totalSystemMeals;
+
+            const tbody = document.getElementById('summaryTableBody');
+            tbody.innerHTML = '';
+
+            const chartLabels = [];
+            const chartData = [];
+
+            data.userCalculationSheet.forEach(row => {
+                chartLabels.push(row.name);
+                chartData.push(row.calculatedCost);
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900 transition";
+                tr.innerHTML = `
+                    <td class="p-2.5">
+                        <div class="font-bold text-slate-200">${row.name}</div>
+                        <div class="text-xs text-slate-500 font-mono">${row.email}</div>
+                    </td>
+                    <td class="p-2.5 text-center font-mono font-bold text-blue-400">${row.totalMeals}</td>
+                    <td class="p-2.5 text-center font-mono text-amber-500">${row.userFixedRate} tk</td>
+                    <td class="p-2.5 text-right font-mono text-cyan-400 font-bold">${row.calculatedCost} tk</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderChart(chartLabels, chartData);
+        }
+
+        function renderChart(labels, data) {
+            const ctx = document.getElementById('analyticsChart').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+            
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Cost (tk)',
+                        data: data,
+                        backgroundColor: 'rgba(34, 211, 238, 0.2)',
+                        borderColor: 'rgba(34, 211, 238, 1)',
+                        borderWidth: 2,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#94a3b8', font: { family: 'monospace' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

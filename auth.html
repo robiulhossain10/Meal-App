@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Gateway - Meal Matrix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-2xl">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold tracking-tight text-cyan-400">Meal Matrix Engine</h1>
+            <p class="text-xs text-slate-500 mt-1 font-mono">Render PostgreSQL Access Node</p>
+        </div>
+
+        <div class="flex space-x-4 border-b border-slate-800 pb-4 mb-4">
+            <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 text-center py-2 font-bold text-cyan-400 border-b-2 border-cyan-400 transition-all">Login</button>
+            <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 text-center py-2 font-bold text-slate-500 border-b-0 transition-all">Register</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Email</label>
+                <input type="email" id="loginEmail" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:border-cyan-500 outline-none font-mono">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                <input type="password" id="loginPassword" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:border-cyan-500 outline-none">
+            </div>
+            <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 font-bold py-2.5 px-4 rounded transition duration-200 text-slate-950 tracking-wide uppercase text-sm">Authenticate</button>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Full Name</label>
+                <input type="text" id="regName" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:border-cyan-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Email Address</label>
+                <input type="email" id="regEmail" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:border-cyan-500 outline-none font-mono">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Fixed Meal Rate (tk)</label>
+                <input type="number" id="regRate" value="70" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:border-cyan-500 outline-none font-mono">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                <input type="password" id="regPassword" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white focus:border-cyan-500 outline-none">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-2.5 px-4 rounded transition duration-200 text-white tracking-wide uppercase text-sm">Create Account</button>
+        </form>
+    </div>
+
+    <script>
+        // যদি অলরেডি টোকেন থাকে, তবে ড্যাশবোর্ডে পাঠিয়ে দেবে
+        if (localStorage.getItem('token')) {
+            window.location.href = '/';
+        }
+
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+
+            if(tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                tabLogin.className = "flex-1 text-center py-2 font-bold text-cyan-400 border-b-2 border-cyan-400";
+                tabRegister.className = "flex-1 text-center py-2 font-bold text-slate-500 border-b-0";
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabLogin.className = "flex-1 text-center py-2 font-bold text-slate-500 border-b-0";
+                tabRegister.className = "flex-1 text-center py-2 font-bold text-blue-400 border-b-2 border-blue-400";
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const fixedMealRate = document.getElementById('regRate').value;
+
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, fixedMealRate })
+            });
+            const data = await response.json();
+            alert(data.message || data.error);
+            if(response.ok) switchAuthTab('login');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            if(response.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = '/'; // সফল লগইনে ড্যাশবোর্ডে ট্রান্সফার
+            } else {
+                alert(data.message || 'Authentication failure');
+            }
+        }
+    </script>
+</body>
+</html>
