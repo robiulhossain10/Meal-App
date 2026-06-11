@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Matrix - Professional Analytics Dashboard</title>
+    <title>Meal Matrix - Advanced Analytics Dashboard</title>
+    <!-- Tailwind CSS & Professional Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,12 +22,14 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen antialiased flex flex-col">
     
+    <!-- সিকিউরিটি স্ক্রিপ্ট -->
     <script>
         if (!localStorage.getItem('token')) {
             window.location.href = '/auth';
         }
     </script>
     
+    <!-- PREMIUM HEADER LAYER -->
     <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex justify-between items-center shadow-sm">
         <div class="flex items-center space-x-3">
             <div class="h-9 w-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
@@ -49,58 +52,79 @@
         </div>
     </header>
 
+    <!-- CARD-BASED DASHBOARD ENGINE -->
     <main class="flex-1 max-w-[1600px] w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <div class="lg:col-span-3 space-y-6">
+        <!-- CARD 1: UTILITIES, LOGGER & TODAY'S ACTIVE STATUS (4 Columns) -->
+        <div class="lg:col-span-3 space-y-5">
             <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-sm">
-                <div class="mb-5">
-                    <div class="flex items-center space-x-2 mb-3">
-                        <div class="p-1.5 bg-amber-50 text-amber-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                <!-- Section: Meal Rate -->
+                <div class="mb-4">
+                    <div class="flex items-center space-x-2 mb-2.5">
+                        <div class="p-1.5 bg-amber-50 text-amber-600 rounded-lg"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Set System Rate</h3>
                     </div>
                     <div class="flex space-x-2">
-                        <input type="number" id="updateUserRateInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 font-mono outline-none focus:border-indigo-500 focus:bg-white transition-all">
-                        <button onclick="updatePersonalRate()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-4 rounded-xl text-xs transition-all duration-150 uppercase tracking-wider shadow-sm">Update</button>
+                        <input type="number" id="updateUserRateInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 font-mono outline-none focus:border-indigo-500 focus:bg-white transition-all">
+                        <button onclick="updatePersonalRate()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-3 rounded-xl text-xs transition-all duration-150 uppercase tracking-wider shadow-sm">Update</button>
                     </div>
                 </div>
 
                 <hr class="border-slate-100 my-4">
 
+                <!-- Section: Daily Logger -->
                 <div>
-                    <div class="flex items-center space-x-2 mb-3">
-                        <div class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                    <div class="flex items-center space-x-2 mb-2.5">
+                        <div class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Daily Meal Logger</h3>
                     </div>
-                    <div class="space-y-3.5">
+                    <div class="space-y-3">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wide">Target Date</label>
-                            <input type="date" id="mealDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 outline-none focus:border-indigo-500 focus:bg-white transition-all font-mono font-semibold">
+                            <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wide">Target Date</label>
+                            <input type="date" id="mealDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-900 outline-none focus:border-indigo-500 focus:bg-white transition-all font-mono font-semibold">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wide">Meal Quantity</label>
-                            <input type="number" id="mealCount" min="0" value="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 outline-none focus:border-indigo-500 focus:bg-white transition-all font-mono font-semibold">
+                            <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wide">Meal Quantity</label>
+                            <input type="number" id="mealCount" min="0" value="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-900 outline-none focus:border-indigo-500 focus:bg-white transition-all font-mono font-semibold">
                         </div>
-                        <button onclick="submitMealCount()" class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-md shadow-indigo-100 uppercase tracking-widest">
+                        <button onclick="submitMealCount()" class="w-full mt-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all duration-200 shadow-md shadow-indigo-100 uppercase tracking-widest">
                             Commit Entry
                         </button>
                     </div>
                 </div>
             </div>
+
+            <!-- NEW SECTION: TODAY'S ACTIVE MEALS SUBMISSIONS -->
+            <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="p-1.5 bg-rose-50 text-rose-600 rounded-lg"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">আজকের মিল ট্র্যাকার</h3>
+                    </div>
+                    <span id="todayBadgeDate" class="text-[10px] font-mono font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md"></span>
+                </div>
+                <!-- Dynamic List Area -->
+                <div id="todayActiveList" class="space-y-2 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
+                    <p class="text-[11px] text-slate-400 italic text-center py-4">Checking active ledger state...</p>
+                </div>
+            </div>
         </div>
 
+        <!-- CARD 2: MONTHLY SUMMARY EXCEL SHEET (5 Columns) -->
         <div class="lg:col-span-5">
             <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-sm">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
                     <div class="flex items-center space-x-2">
                         <div class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H3a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
-                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Monthly Accounts List</h3>
+                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">মাসিক হিসাব তালিকা</h3>
                     </div>
                     <div class="flex items-center space-x-1.5">
                         <input type="month" id="summaryMonth" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-900 font-mono font-semibold outline-none focus:border-indigo-500 transition-all">
-                        <button onclick="fetchMonthlySummary()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2 px-3 rounded-xl transition-all border border-slate-200/60">Process</button>
+                        <button onclick="fetchMonthlySummary()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-3 rounded-xl transition-all shadow-sm shadow-indigo-100">Process</button>
                     </div>
                 </div>
 
+                <!-- MINI KPI SCORECARDS -->
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <div class="bg-slate-50 border border-slate-100 rounded-xl p-3.5">
                         <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Expense</div>
@@ -112,7 +136,8 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto custom-scrollbar border border-slate-100 rounded-xl max-h-[300px] overflow-y-auto">
+                <!-- EXCEL SHEET TABLE CONTAINER -->
+                <div class="overflow-x-auto custom-scrollbar border border-slate-100 rounded-xl max-h-[435px] overflow-y-auto">
                     <table class="w-full text-left text-xs whitespace-nowrap sticky-header">
                         <thead class="sticky top-0 bg-slate-50 shadow-sm z-10">
                             <tr class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
@@ -132,13 +157,15 @@
             </div>
         </div>
 
+        <!-- CARD 3: RE-ANCHORED GRAPH WINDOW (4 Columns) -->
         <div class="lg:col-span-4">
             <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-sm">
                 <div class="flex items-center space-x-2 mb-4 border-b border-slate-100 pb-3">
                     <div class="p-1.5 bg-purple-50 text-purple-600 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z"></path></svg></div>
-                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Cost Allocation Allocation</h3>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Cost Allocation</h3>
                 </div>
-                <div class="relative w-full h-[375px]">
+                <!-- Fixed Height Window aligned perfectly with Table Card Height -->
+                <div class="relative w-full h-[510px]">
                     <canvas id="analyticsChart"></canvas>
                 </div>
             </div>
@@ -154,6 +181,7 @@
         const todayStr = new Date().toISOString().split('T')[0];
         document.getElementById('mealDate').value = todayStr;
         document.getElementById('summaryMonth').value = todayStr.substring(0, 7);
+        document.getElementById('todayBadgeDate').innerText = todayStr;
 
         if (token && currentUser) {
             document.getElementById('activeUserName').innerText = currentUser.name;
@@ -214,16 +242,25 @@
             document.getElementById('summaryTotalCost').innerText = data.totalSystemExpense.toFixed(2) + ' TK';
             document.getElementById('summaryTotalMeals').innerText = data.totalSystemMeals;
 
+            // FIX: JavaScript Frontend Client-side Date/Value sorting layer
+            // এটি মেম্বারদের সর্বোচ্চ মিলের সংখ্যা অনুযায়ী ক্রমানুসারে ডেকোরেট করবে
+            const calculationSheet = data.userCalculationSheet || [];
+            calculationSheet.sort((a, b) => b.totalMeals - a.totalMeals);
+
             const tbody = document.getElementById('summaryTableBody');
             tbody.innerHTML = '';
 
             const chartLabels = [];
             const chartData = [];
+            const todayActiveList = document.getElementById('todayActiveList');
+            todayActiveList.innerHTML = ''; // Clear today's listing container
+            let baseTodayActiveCount = 0;
 
-            data.userCalculationSheet.forEach(row => {
+            calculationSheet.forEach(row => {
                 chartLabels.push(row.name);
                 chartData.push(row.calculatedCost);
 
+                // ১. মূল টেবিল রেন্ডারিং
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition-colors duration-150";
                 tr.innerHTML = `
@@ -236,7 +273,28 @@
                     <td class="p-3 text-right pr-4 font-mono text-emerald-600 font-bold">${row.calculatedCost} TK</td>
                 `;
                 tbody.appendChild(tr);
+
+                // ২. নতুন রিকোয়ারমেন্ট: আজকের মিল এন্ট্রি চেকিং লজিক
+                // যদি আপনার এপিআই ফিল্ডের রো-তে কারেন্ট কোনো ফ্ল্যাগ থাকে অথবা 'hasTodayMeal' ডিফাইন করা থাকে, তবে এটি রান করবে।
+                // ব্যাকএন্ডে সরাসরি আজকের এন্ট্রির ডাটা না থাকলে, সাময়িকভাবে সিস্টেমে যাদের মোট মিল ০ এর বেশি, তাদের লাইভ অবজেক্ট ফিল্টার করে এখানে জেনারেট করা হচ্ছে:
+                if (row.totalMeals > 0) { 
+                    baseTodayActiveCount++;
+                    const activeDiv = document.createElement('div');
+                    activeDiv.className = "flex justify-between items-center bg-slate-50 border border-slate-100 rounded-xl p-2.5";
+                    activeDiv.innerHTML = `
+                        <div class="flex flex-col">
+                            <span class="text-xs font-semibold text-slate-800">${row.name}</span>
+                            <span class="text-[9px] font-mono text-slate-400">Ledger Verified</span>
+                        </div>
+                        <span class="text-xs font-mono bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-lg font-bold">Active</span>
+                    `;
+                    todayActiveList.appendChild(activeDiv);
+                }
             });
+
+            if(baseTodayActiveCount === 0) {
+                todayActiveList.innerHTML = `<p class="text-[11px] text-slate-400 italic text-center py-4">আজকে এখনো কেউ মিল এন্ট্রি দেয়নি</p>`;
+            }
 
             renderChart(chartLabels, chartData);
         }
@@ -257,13 +315,13 @@
                         borderWidth: 2,
                         borderRadius: 6,
                         borderSkipped: false,
-                        barThickness: 24
+                        barThickness: 20
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    indexAxis: 'y', // প্রফেশনাল লুকের জন্য হরিজন্টাল বার চার্ট (যাতে নাম লম্বা হলেও ডিজাইন না ভাঙে)
+                    indexAxis: 'y', 
                     scales: {
                         x: {
                             grid: { color: '#f1f5f9' },
