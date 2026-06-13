@@ -13,7 +13,7 @@ app.use(cors());
 // ==========================================
 // 1. POSTGRESQL ENGINE CONFIGURATION
 // ==========================================
-const DB_URI = process.env.DATABASE_URL || 'postgresql://axisbank:Vjp7ymp3rfbGqgZI2SaIm9lQsC0lWs3K@dpg-d89bojul51nc738991m0-a.singapore-postgres.render.com/axisbank'; 
+const DB_URI = process.env.DATABASE_URL; 
 
 const sequelize = new Sequelize(DB_URI, {
     dialect: 'postgres',
